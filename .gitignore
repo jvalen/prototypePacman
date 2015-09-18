@@ -14,7 +14,6 @@ CONTRIBUTING.md
 gulpfile.js
 package.json
 .idea/
-.idea/*
 .idea/misc.xml
 .idea/modules.xml
 .idea/prototypePacman.iml
