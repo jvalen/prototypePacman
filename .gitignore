@@ -13,5 +13,11 @@ CHANGELOG.md
 CONTRIBUTING.md
 gulpfile.js
 package.json
-.idea
+.idea/
 .idea/*
+.idea/misc.xml
+.idea/modules.xml
+.idea/prototypePacman.iml
+.idea/vcs.xml
+.idea/workspace.xml
+
