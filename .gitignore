@@ -1,0 +1,17 @@
+archive
+node_modules
+test
+dist
+src/doc
+src/img
+.editorconfig
+.gitattributes
+.jscsrc
+.jshintrc
+.travis.yml
+CHANGELOG.md
+CONTRIBUTING.md
+gulpfile.js
+package.json
+.idea
+.idea/*
