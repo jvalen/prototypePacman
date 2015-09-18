@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Prototype Pacman</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/main.css">
+    </head>
+    <body>
+        <h1>PROTOTYPE PACMAN</h1>
+        <h2>GOAL: Change the color of the walkable path (black)</h2>
+        <p>Use arrow keys to move the player</p>
+        <canvas id="world" width="1000" height="780"></canvas>
+
+        <div id="openModal" class="modalDialog">
+            <div>
+                <h2></h2>
+                <p></p>
+                <a href="javascript:Utils.changeHashTagAndReload('close')" title="Close" class="close">RESTART</a>
+            </div>
+        </div>
+        <script src="js/utils.js"></script>
+        <script src="js/keyboard.js"></script>
+        <script src="assets/config.js"></script>
+        <script src="js/board.js"></script>
+        <script src="js/player.js"></script>
+        <script src="js/ghost.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
