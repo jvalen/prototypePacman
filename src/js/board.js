@@ -208,6 +208,8 @@ PrototypePacman.Board.prototype = {
 
         }
 
+        this.setBoardTunnels();
+
         // Private methods
         function calculatePiecesRowTileCount(rowTilesCount) {
             return Math.floor(Math.floor(rowTilesCount / 2) / 2 );
@@ -422,6 +424,59 @@ PrototypePacman.Board.prototype = {
         });
     },
     /**
+     * Set tunnel in vertical boundaries
+     * @method PrototypePacman.Board#setBoardTunnels
+     * @return {object}
+     */
+    setBoardTunnels: function() {
+        var tileAmount = this.options.tileAmount.column,
+            positionLeftBoundary = Utils.getRandomInt(1, tileAmount - 2),
+            positionRightBoundary =Utils.getRandomInt(1, tileAmount - 2),
+            tileLeftBoundary =
+                this.board[0][positionLeftBoundary],
+            tileRightBoundary =
+                this.board[tileAmount - 1][positionRightBoundary];
+
+        tileLeftBoundary.color = this.options.colors['walkable'];
+        tileRightBoundary.color = this.options.colors['walkable'];
+
+        this.board.leftTunnelTile = { x: 0, y: positionLeftBoundary};
+        this.board.rightTunnelTile = { x: tileAmount - 1, y: positionRightBoundary};
+
+        this.walkableTileCount += 2;
+    },
+    /**
+     * Returns the position of a given tunnel side
+     * @method PrototypePacman.Board#tunnelPosition
+     * @return {object}
+     */
+    tunnelPosition: function(side) {
+        var position;
+        switch (side) {
+            case 'left':
+                position = {
+                    x: this.board
+                        [this.board.leftTunnelTile.x]
+                        [this.board.leftTunnelTile.y].center.x,
+                    y: this.board[
+                        this.board.leftTunnelTile.x]
+                        [this.board.leftTunnelTile.y].center.y
+                };
+                break;
+            case 'right':
+                position = {
+                    x: this.board
+                        [this.board.rightTunnelTile.x]
+                        [this.board.rightTunnelTile.y].center.x,
+                    y: this.board
+                        [this.board.rightTunnelTile.x]
+                        [this.board.rightTunnelTile.y].center.y
+                };
+                break;
+        }
+        return position;
+    },
+    /**
      * Change a tile color
      * @method PrototypePacman.Board#changeTileColor
      * @param {number} worldX
@@ -438,11 +493,28 @@ PrototypePacman.Board.prototype = {
         if (
             (tile.color !== color) &&
             (colorType === 'walked') &&
-            sameCenter
+            sameCenter //To avoid walked color is shown before the player move
         ) {
             tile.color = color;
             this.walkableTileCount--;
         }
+    },
+    /**
+     * Return boundaries coordinates
+     * @method PrototypePacman.Board#boundariesCoord
+     * @return {object}
+     */
+    boundariesCoord: function() {
+        return {
+            horizontal: {
+                min: 0 + this.options.tileOffset.x,
+                max: this.board[this.board.length - 1][0].center.x
+            },
+            vertical: {
+                min: 0 + this.options.tileOffset.y,
+                max: this.board[0][this.board.length - 1].center.y
+            }
+        };
     }
 };
 
