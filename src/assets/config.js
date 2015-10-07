@@ -50,19 +50,19 @@ PrototypePacman.config = {
             size: { width: 30, height: 30 },
             center: { x: 24 * 30, y: 2 * 30},
             color: 'cyan',
-            speed: 2
+            speed: 3
         },
         {
             size: { width: 30, height: 30 },
             center: { x: 2 * 30, y: 12 * 30},
             color: 'darksalmon ',
-            speed: 1
+            speed: 2
         },
         {
             size: { width: 30, height: 30 },
             center: { x: 24 * 30, y: 12 * 30},
             color: 'lawngreen',
-            speed: 1
+            speed: 2
         }
     ],
     text: {
