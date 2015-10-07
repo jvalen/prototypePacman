@@ -56,7 +56,7 @@ PrototypePacman.config = {
             size: { width: 30, height: 30 },
             center: { x: 2 * 30, y: 12 * 30},
             color: 'darksalmon ',
-            speed: 2
+            speed: 1
         },
         {
             size: { width: 30, height: 30 },
