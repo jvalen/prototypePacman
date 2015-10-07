@@ -76,7 +76,14 @@ PrototypePacman.Player.prototype = {
                         this.center.x - (this.size.width / 2),
                         this.center.y - (this.size.height / 2)
                     );
-                    player.center.x -= speed;
+                    if (player.game.outOfBoundaries(player.center.x - speed, player.center.y)) {
+                        var rightTunnelPos = player.game.giveMeTunnelPosition('right');
+
+                        player.center.x = rightTunnelPos.x;
+                        player.center.y = rightTunnelPos.y;
+                    } else {
+                        player.center.x -= speed;
+                    }
                     player.moveDirection.current = 'left';
                 } else if (isWaiting) {
                     this.movePlayer(player, player.moveDirection.current, false);
@@ -88,7 +95,15 @@ PrototypePacman.Player.prototype = {
                         this.center.x - (this.size.width / 2),
                         this.center.y - (this.size.height / 2)
                     );
-                    player.center.x += speed;
+                    if (player.game.outOfBoundaries(player.center.x + speed, player.center.y)) {
+                        var leftTunnelPos = player.game.giveMeTunnelPosition('left');
+
+                        player.center.x = leftTunnelPos.x;
+                        player.center.y = leftTunnelPos.y;
+                    } else {
+                        player.center.x += speed;
+                    }
+
                     player.moveDirection.current = 'right';
                 } else if (isWaiting) {
                     this.movePlayer(player, player.moveDirection.current, false);

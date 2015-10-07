@@ -125,6 +125,35 @@
             return this.board.isWalkablePosition(body, x, y);
         },
         /**
+         * Returns true if the passed coordinates are out of bounds
+         *
+         * @method PrototypePacman.Game#outOfBoundaries
+         * @param {number} x
+         * @param {number} y
+         * @return {boolean}
+         */
+        outOfBoundaries: function (x, y) {
+            var boundaries = this.board.boundariesCoord();
+            if (
+                (x < boundaries.horizontal.min || x > boundaries.horizontal.max) ||
+                ((y < boundaries.vertical.min || y > boundaries.vertical.max))
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        /**
+         * Returns the tunnel position of a given side
+         *
+         * @method PrototypePacman.Game#giveMeTunnelPosition
+         * @param {string} position
+         * @return {boolean}
+         */
+        giveMeTunnelPosition: function(side) {
+            return (this.board.tunnelPosition(side));
+        },
+        /**
          * Mark board maze passed tile as walked
          *
          * @method PrototypePacman.Game#markTileAsWalked
