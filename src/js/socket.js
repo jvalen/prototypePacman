@@ -22,9 +22,9 @@ Network.Socket = function(address) {
     }
 
     this.socket.onmessage = function(e) {
-        if (typeof e.data == "string") {
+        /*if (typeof e.data == "string") {
             console.log("Text message received: " + e.data);
-        }
+        }*/
     }
 
     this.socket.onclose = function(e) {

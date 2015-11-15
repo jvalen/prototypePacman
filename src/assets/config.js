@@ -80,5 +80,9 @@ PrototypePacman.config = {
                 description: 'You have been eaten by a grue :S'
             }
         }
+    },
+    socket: {
+        active: false,
+        address: 'ws://127.0.0.1:9000'
     }
 };
