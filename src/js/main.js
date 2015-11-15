@@ -34,6 +34,9 @@
         var ghostOptions = PrototypePacman.config.ghostOptions;
         this.ghosts = this.createGhosts(this, ghostOptions);
 
+        this.socket = new Network.Socket("ws://127.0.0.1:9000");
+        //this.socket.send('Hey buddies', 'string');
+
         //Game state
         this.gameScreenshot = this.getGameScreenshot();
         this.gameState = 'playing';
@@ -62,7 +65,6 @@
 
             for (var i = 0; i < this.ghosts.length; i++) {
                 if (Utils.colliding(this.ghosts[i], this.player)) {
-                    this.gameState = 'lose';
                     this.gameOver({
                         title: PrototypePacman.config.text[this.lang].lose.title,
                         description: PrototypePacman.config.text[this.lang].lose.description
@@ -71,12 +73,13 @@
             }
 
             if (this.board.walkableTileCount === 0) {
-                this.gameState = 'win';
                 this.gameOver({
                     title: PrototypePacman.config.text[this.lang].win.title,
                     description: PrototypePacman.config.text[this.lang].win.description
                 });
             }
+
+            this.sendGameState();
 
             this.gameScreenshot = this.getGameScreenshot();
         },
@@ -95,6 +98,10 @@
             for (var i= 0; i < this.ghosts.length; i++) {
                 this.ghosts[i].draw(screen);
             }
+        },
+        sendGameState: function() {
+            var gameState = {};
+            //this.socket.send(gameState);
         },
         /**
          * Create ghosts
