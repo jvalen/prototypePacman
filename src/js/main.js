@@ -34,6 +34,9 @@
         var ghostOptions = PrototypePacman.config.ghostOptions;
         this.ghosts = this.createGhosts(this, ghostOptions);
 
+        this.socket = new Network.Socket("ws://127.0.0.1:9000");
+        //this.socket.send('Hey buddies', 'string');
+
         var self = this;
 
         var tick = function(){
@@ -71,6 +74,8 @@
                     description: PrototypePacman.config.text[this.lang].win.description
                 });
             }
+
+            this.sendGameState();
         },
         /**
          * Draw game bodies
@@ -87,6 +92,10 @@
             for (var i= 0; i < this.ghosts.length; i++) {
                 this.ghosts[i].draw(screen);
             }
+        },
+        sendGameState: function() {
+            var gameState = {};
+            //this.socket.send(gameState);
         },
         /**
          * Create ghosts
