@@ -31,6 +31,10 @@ PrototypePacman.config = {
         tileOffset: { //Offset from the origin, in pixels
             x: 30,
             y: 30
+        },
+        layout: {
+            random: false,
+            static: PrototypePacman.staticBoard
         }
     },
     playerOptions: {

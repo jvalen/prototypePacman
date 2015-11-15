@@ -57,7 +57,11 @@ PrototypePacman.Board.prototype = {
                     {
                         x: this.options.tileSize.width * this.options.tileAmount.row + (this.options.tileOffset.x * 2),
                         y: this.options.tileOffset.y * 2 },
-                    colors.wall[Utils.getRandomInt(0, colors.wall.length - 1)]
+                    colors.wall[
+                        options.layout.random ?
+                            Utils.getRandomInt(0, colors.wall.length - 1) :
+                            options.layout.static[i][j].color
+                        ]
                 );
             }
         }
