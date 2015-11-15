@@ -519,6 +519,27 @@ PrototypePacman.Board.prototype = {
                 max: this.board[0][this.board.length - 1].center.y
             }
         };
+    },
+    /**
+     * Returns the board reference array
+     *  0: wall | 1: walkable tile | 2: walked tile
+     * @method PrototypePacman.Board#getReference
+     * @return {array}
+     */
+    getReference: function() {
+       var self = this;
+       return this.board.map(function(column){
+           return column.map(function(item) {
+               var code = 0;
+               if (item.color === self.options.colors['walkable']) {
+                   return 1;
+               } else if (item.color === self.options.colors['walked']) {
+                   return 2;
+               } else {
+                   return 0;
+               }
+           });
+       });
     }
 };
 

@@ -34,6 +34,10 @@
         var ghostOptions = PrototypePacman.config.ghostOptions;
         this.ghosts = this.createGhosts(this, ghostOptions);
 
+        //Game state
+        this.gameScreenshot = this.getGameScreenshot();
+        this.gameState = 'playing';
+
         var self = this;
 
         var tick = function(){
@@ -58,6 +62,7 @@
 
             for (var i = 0; i < this.ghosts.length; i++) {
                 if (Utils.colliding(this.ghosts[i], this.player)) {
+                    this.gameState = 'lose';
                     this.gameOver({
                         title: PrototypePacman.config.text[this.lang].lose.title,
                         description: PrototypePacman.config.text[this.lang].lose.description
@@ -66,11 +71,14 @@
             }
 
             if (this.board.walkableTileCount === 0) {
+                this.gameState = 'win';
                 this.gameOver({
                     title: PrototypePacman.config.text[this.lang].win.title,
                     description: PrototypePacman.config.text[this.lang].win.description
                 });
             }
+
+            this.gameScreenshot = this.getGameScreenshot();
         },
         /**
          * Draw game bodies
@@ -184,6 +192,34 @@
             window.location.href = "#openModal"; // Show modal
 
             this.ghosts = []; //Reset ghosts
+        },
+        /**
+         * Return the current state of the game
+         *
+         * @method PrototypePacman.Game#getGameScreenshot
+         */
+        getGameScreenshot: function() {
+            var playerPos = this.board.getTileCoordinates(
+                this.player.center.x,
+                this.player.center.y
+                ),
+                self = this;
+
+            return {
+                board: this.board.getReference(),
+                player: {
+                    x: playerPos.x,
+                    y: playerPos.y,
+                    move: this.player.moveDirection
+                },
+                ghosts: this.ghosts.map(function(g){
+                    return self.board.getTileCoordinates(
+                        g.center.x,
+                        g.center.y
+                    );
+                }),
+                state: this.gameState //win, lose, playing
+            }
         }
     };
 
