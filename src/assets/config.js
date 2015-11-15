@@ -35,7 +35,8 @@ PrototypePacman.config = {
         layout: {
             random: false,
             static: PrototypePacman.staticBoard
-        }
+        },
+        tunnels: false
     },
     playerOptions: {
         size: { width: 30, height: 30 },

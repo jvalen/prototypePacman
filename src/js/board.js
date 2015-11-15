@@ -212,7 +212,10 @@ PrototypePacman.Board.prototype = {
 
         }
 
-        this.setBoardTunnels();
+        //Enable or disable tunnels
+        if (this.options.tunnels) {
+            this.setBoardTunnels();
+        }
 
         // Private methods
         function calculatePiecesRowTileCount(rowTilesCount) {
