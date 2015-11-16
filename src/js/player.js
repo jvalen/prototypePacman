@@ -40,11 +40,12 @@ PrototypePacman.Player.prototype = {
         if (
             PrototypePacman.config.socket.active &&
             PrototypePacman.config.socket.playerMovesFromServer &&
-            this.game.socket.dataReceived !== null
+            this.isValidAction(this.game.socket.dataReceived)
         ) {
+            //Player direction is given by the socket connection
             this.moveDirection.waiting = this.game.socket.dataReceived;
         } else {
-            //Change direction
+            //Change direction (keyboard)
             if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
                 this.moveDirection.waiting = 'left';
             } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
@@ -141,6 +142,13 @@ PrototypePacman.Player.prototype = {
                     this.movePlayer(player, player.moveDirection.current, false);
                 }
                 break;
+        }
+    },
+    isValidAction: function(action) {
+        if (typeof action === 'string') {
+          return (['up', 'down', 'left', 'right'].indexOf(action) > -1);
+        } else {
+            return false;
         }
     }
 };
