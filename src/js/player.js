@@ -37,15 +37,23 @@ PrototypePacman.Player.prototype = {
         //Move player
         this.movePlayer(this, this.moveDirection.waiting, true);
 
-        //Change direction
-        if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
-            this.moveDirection.waiting = 'left';
-        } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
-            this.moveDirection.waiting = 'right';
-        } else if (this.keyboarder.isDown(this.keyboarder.KEYS.UP)) {
-            this.moveDirection.waiting = 'up';
-        } else if (this.keyboarder.isDown(this.keyboarder.KEYS.DOWN)) {
-            this.moveDirection.waiting = 'down';
+        if (
+            PrototypePacman.config.socket.active &&
+            PrototypePacman.config.socket.playerMovesFromServer &&
+            this.game.socket.dataReceived !== null
+        ) {
+            this.moveDirection.waiting = this.game.socket.dataReceived;
+        } else {
+            //Change direction
+            if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
+                this.moveDirection.waiting = 'left';
+            } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
+                this.moveDirection.waiting = 'right';
+            } else if (this.keyboarder.isDown(this.keyboarder.KEYS.UP)) {
+                this.moveDirection.waiting = 'up';
+            } else if (this.keyboarder.isDown(this.keyboarder.KEYS.DOWN)) {
+                this.moveDirection.waiting = 'down';
+            }
         }
     },
     /**

@@ -13,8 +13,10 @@
 var Network = Network || {};
 
 Network.Socket = function(address) {
+    var self = this;
     this.socket = new WebSocket(address);
     this.socket.binaryType = "arraybuffer";
+    this.dataReceived = null;
 
     this.socket.onopen = function() {
         this.isopen = true;
@@ -22,9 +24,10 @@ Network.Socket = function(address) {
     }
 
     this.socket.onmessage = function(e) {
-        /*if (typeof e.data == "string") {
-            console.log("Text message received: " + e.data);
-        }*/
+        if (typeof e.data == "string") {
+            self.dataReceived = e.data;
+            //console.log("String message received: " + e.data);
+        }
     }
 
     this.socket.onclose = function(e) {

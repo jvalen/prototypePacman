@@ -84,6 +84,7 @@ PrototypePacman.config = {
     },
     socket: {
         active: false,
+        playerMovesFromServer: false,
         address: 'ws://127.0.0.1:9000'
     }
 };
