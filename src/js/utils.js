@@ -109,6 +109,14 @@
             window.location.reload();
         },
         /**
+         * Remove url hashtag and reload page
+         * @param {string} tag
+         */
+        removeHashTagAndReload: function() {
+            history.pushState('', document.title, window.location.pathname);
+            window.location.reload();
+        },
+        /**
         * Returns the shortest path between two points: A* algorithm
         * (modified version of Christer's tutorial (http://buildnewgames.com/astar/) algorithm)
         *
