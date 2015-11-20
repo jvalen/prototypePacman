@@ -27,12 +27,33 @@ canvas {
     pointer-events: none;
 }
 
-.modalDialog:target {
+.main-menu {
+    position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 3em;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 999919;
+    opacity:0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+}
+
+.main-menu:target {
     opacity:1;
     pointer-events: auto;
 }
 
-.modalDialog > div {
+.modalDialog:target{
+    opacity:1;
+    pointer-events: auto;
+}
+
+.modalDialog > div{
     width: 25%;
     position: relative;
     margin: 15% auto;
@@ -44,7 +65,19 @@ canvas {
     background: -o-linear-gradient(#fff, #999);
 }
 
-.close {
+.main-menu > div {
+    width: 50%;
+    position: relative;
+    margin: 5% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 10px;
+    background: #fff;
+    background: -moz-linear-gradient(#fff, #999);
+    background: -webkit-linear-gradient(#fff, #999);
+    background: -o-linear-gradient(#fff, #999);
+}
+
+.close, .menu-option {
     background: #606061;
     color: #FFFFFF;
     line-height: 25px;
@@ -61,4 +94,12 @@ canvas {
     box-shadow: 1px 1px 3px #000;
 }
 
-.close:hover { background: #00d9ff; }
+.menu-option {
+    width: 100%;
+    font-size: 0.8em;
+    padding: 0.5em 1em;
+    margin: 0.8em auto;
+    line-height: 1em;
+}
+
+.close:hover, .menu-option:hover { background: #00d9ff; }

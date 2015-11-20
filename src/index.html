@@ -15,11 +15,20 @@
         <p>Use arrow keys to move the player</p>
         <canvas id="world" width="1000" height="780"></canvas>
 
+        <div id="main-menu" class="main-menu">
+            <div>
+                <h2>PROTOTYPE PACMAN</h2>
+                <button class="menu-option" onclick="PrototypePacman.Game.prototype.start('world', 'single');">Single Player</button>
+                <button class="menu-option" onclick="PrototypePacman.Game.prototype.start('world', 'lan');">Multiplayer LAN</button>
+                <button class="menu-option" onclick="PrototypePacman.Game.prototype.start('world', 'learning');">Machine learning</button>
+            </div>
+        </div>
+
         <div id="openModal" class="modalDialog">
             <div>
                 <h2></h2>
                 <p></p>
-                <a href="javascript:Utils.removeHashTagAndReload()" title="Close" class="close">RESTART</a>
+                <a href="javascript:Utils.removeHashTag(true)" title="Close" class="close">RESTART</a>
             </div>
         </div>
         <script src="js/utils.js"></script>

@@ -12,47 +12,70 @@
  * @param {object} canvasId
  */
 ;(function() {
-    var Game = function(canvasId) {
-        var canvas = document.getElementById(canvasId),
-            screen = canvas.getContext('2d'),
-            gameSize = { width: canvas.width, height: canvas.height },
-            boardOptions = PrototypePacman.config.boardOptions;
-
-        //Default locale
-        this.lang = 'en';
-
-        //Create board maze
-        boardOptions.gameSize = gameSize;
-        this.board = new PrototypePacman.Board(screen, boardOptions);
-
-        //Create player
-        var playerOptions = PrototypePacman.config.playerOptions;
-        playerOptions.center = this.board.getPlayerInitialPosition();
-        this.player = new PrototypePacman.Player(this, playerOptions);
-
-        //Create ghosts
-        var ghostOptions = PrototypePacman.config.ghostOptions;
-        this.ghosts = this.createGhosts(this, ghostOptions);
-
-        if (PrototypePacman.config.socket.active) {
-            this.socket = new Network.Socket(PrototypePacman.config.socket.address);
-        }
-
-        //Game state
-        this.gameScreenshot = this.getGameScreenshot();
-        this.gameState = 'playing';
-
-        var self = this;
-
-        var tick = function(){
-            self.update();
-            self.draw(screen, gameSize);
-            requestAnimationFrame(tick);
-        };
-
-        tick();
+    var Game = function() {
+        //Show the main menu
+        Utils.changeHashTag('main-menu', false);
     };
     Game.prototype = {
+        /**
+         * Start the game
+         * @method PrototypePacman.Game#start
+         */
+        start: function(canvasId, type) {
+            Utils.changeHashTag('', false);
+            //Options
+            switch(type) {
+                case 'single':
+                    break;
+                case 'lan':
+                    PrototypePacman.config.socket.active = true;
+                    PrototypePacman.config.socket.playerMovesFromServer = true;
+                    break;
+                case 'learning':
+                    PrototypePacman.config.socket.active = true;
+                    PrototypePacman.config.socket.playerMovesFromServer = true;
+                    break;
+            }
+
+            var canvas = document.getElementById(canvasId),
+                screen = canvas.getContext('2d'),
+                gameSize = { width: canvas.width, height: canvas.height },
+                boardOptions = PrototypePacman.config.boardOptions;
+
+            //Default locale
+            this.lang = 'en';
+
+            //Create board maze
+            boardOptions.gameSize = gameSize;
+            this.board = new PrototypePacman.Board(screen, boardOptions);
+
+            //Create player
+            var playerOptions = PrototypePacman.config.playerOptions;
+            playerOptions.center = this.board.getPlayerInitialPosition();
+            this.player = new PrototypePacman.Player(this, playerOptions);
+
+            //Create ghosts
+            var ghostOptions = PrototypePacman.config.ghostOptions;
+            this.ghosts = this.createGhosts(this, ghostOptions);
+
+            if (PrototypePacman.config.socket.active) {
+                this.socket = new Network.Socket(PrototypePacman.config.socket.address);
+            }
+
+            //Game state
+            this.gameScreenshot = this.getGameScreenshot();
+            this.gameState = 'playing';
+
+            var self = this;
+
+            var tick = function(){
+                self.update();
+                self.draw(screen, gameSize);
+                requestAnimationFrame(tick);
+            };
+
+            tick();
+        },
         /**
          * Update game logic
          * @method PrototypePacman.Game#update

@@ -101,20 +101,20 @@
             }
         },
         /**
-         * Change url hashtag and reload page
+         * Change url hashtag
          * @param {string} tag
          */
-        changeHashTagAndReload: function(tag) {
+        changeHashTag: function(tag, reload) {
             window.location.href = "#" + tag;
-            window.location.reload();
+            if (reload) { window.location.reload(); }
         },
         /**
          * Remove url hashtag and reload page
          * @param {string} tag
          */
-        removeHashTagAndReload: function() {
+        removeHashTag: function(reload) {
             history.pushState('', document.title, window.location.pathname);
-            window.location.reload();
+            if (reload) { window.location.reload(); }
         },
         /**
         * Returns the shortest path between two points: A* algorithm
