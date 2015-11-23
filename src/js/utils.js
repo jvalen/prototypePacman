@@ -18,7 +18,7 @@
          */
         addClass: function(target, className) {
             if (typeof className === 'string') {
-                target.className += className;
+                target.className += ' ' + className;
             }
         },
         /**

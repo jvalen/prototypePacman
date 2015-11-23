@@ -6,6 +6,26 @@ body {
     text-align: center;
 }
 
+ul {
+    list-style: none;
+    font-size: 0.7em;
+    text-align: left;
+    padding: 0;
+}
+
+ul li {
+    padding: 0.8em;
+    margin: 0.5em 0;
+}
+
+#ul-players {
+    position: absolute;
+    left: 1000px;
+    font-size: 1.2em;
+    top: 550px;
+    width: 300px;
+}
+
 canvas {
     margin: 0 auto;
     display: table;
@@ -66,7 +86,7 @@ canvas {
 }
 
 .main-menu > div , .waiting-players > div {
-    width: 50%;
+    width: 60%;
     position: relative;
     margin: 5% auto;
     padding: 5px 20px 13px 20px;

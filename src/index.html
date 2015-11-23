@@ -15,10 +15,14 @@
         <p>Use arrow keys to move the player</p>
         <canvas id="world" width="1000" height="780"></canvas>
 
+        <ul id="ul-players"></ul>
+
         <div id="waiting-players" class="waiting-players">
             <div>
                 <h3>Waiting</h3>
-                <button id="button-ready-multiplayer" class="menu-option hide" onclick="PrototypePacman.Game.prototype.start('world', 'learning');">Start</button>
+                <p id="spots-available"></p>
+                <ul id="ul-waiting-players"></ul>
+                <button id="button-ready-multiplayer" class="menu-option hide" onclick="PrototypePacman.Game.prototype.playersReady();">Start</button>
             </div>
         </div>
 

@@ -49,36 +49,36 @@ PrototypePacman.config = {
             size: { width: 30, height: 30 },
             center: { x: 2 * 30, y: 2 * 30},
             color: 'pink',
-            speed: 1
-        }/*,
+            speed: 2
+        },
         {
             size: { width: 30, height: 30 },
             center: { x: 24 * 30, y: 2 * 30},
             color: 'cyan',
-            speed: 1
+            speed: 2
         },
         {
             size: { width: 30, height: 30 },
             center: { x: 2 * 30, y: 12 * 30},
             color: 'darksalmon',
-            speed: 1
+            speed: 2
         },
         {
             size: { width: 30, height: 30 },
             center: { x: 24 * 30, y: 12 * 30},
             color: 'lawngreen',
-            speed: 1
-        }*/
+            speed: 2
+        }
     ],
     text: {
         en: {
             win: {
-                title: 'YOU WIN',
+                title: 'PROTO-PAC WINS!',
                 description: 'Congratulations!'
             },
             lose: {
-                title: 'GAMEOVER',
-                description: 'You have been eaten by a grue :S'
+                title: 'GHOSTS WIN!',
+                description: 'ProtoPac has been eaten by a grue :S'
             }
         }
     },
@@ -86,6 +86,14 @@ PrototypePacman.config = {
         active: false,
         playerMovesFromServer: false,
         multiplayer: false,
+        maxPlayers: 2,
+        playersData: [
+            {color: '#B3B3B3', role: 'player'},
+            {color: 'pink', role: 'ghost'},
+            {color: 'cyan', role: 'ghost'},
+            {color: 'darksalmon', role: 'ghost'},
+            {color: 'lawngreen', role: 'ghost'}
+        ],
         multiplayerData: {},
         //address: 'ws://192.168.1.222:9000'
         address: 'ws://127.0.0.1:9000'

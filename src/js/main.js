@@ -23,6 +23,9 @@
          */
         start: function(canvasId, type) {
             Utils.changeHashTag('', false);
+            this.hideMenu('main-menu');
+            this.canvasId = canvasId;
+
             //Options
             switch(type) {
                 case 'single':
@@ -33,7 +36,7 @@
                     PrototypePacman.config.socket.playerMovesFromServer = false;
                     PrototypePacman.config.socket.multiplayer = true;
                     this.socket = new Network.Socket(PrototypePacman.config.socket.address);
-                    this.waitingForPlayers(canvasId);
+                    this.waitingForPlayers();
                     break;
                 case 'learning':
                     PrototypePacman.config.socket.active = true;
@@ -88,7 +91,7 @@
          * Wait for players in multiplayer mode
          * @method PrototypePacman.Game#waitingForPlayers
          */
-        waitingForPlayers: function(canvasId) {
+        waitingForPlayers: function() {
             var self = this;
 
             Utils.changeHashTag('waiting-players', false);
@@ -97,33 +100,85 @@
                 var data = self.socket.dataReceived,
                     action = {
                         action: 'waiting',
-                        playersSetup: [
-                            {color: '#B3B3B3', role: 'player'},
-                            {color: 'pink', role: 'ghost'},
-                            {color: 'cyan', role: 'ghost'},
-                            {color: 'darksalmon', role: 'ghost'},
-                            {color: 'lawngreen', role: 'ghost'}
-                        ]
+                        playersSetup: PrototypePacman.config.socket.playersData
                     },
-                    maxPlayers = 2;
+                    maxPlayers = PrototypePacman.config.socket.maxPlayers;
 
-                if (!!data && data.length === maxPlayers) {
-                    PrototypePacman.config.socket.multiplayerData = {
-                        playersCount: maxPlayers
-                    };
-                    clearInterval(self.pollingPlayers);
-                    Utils.changeHashTag('#',false);
-                    self.initGame(canvasId);
-                    console.log('clear interval');
-                } else {
-                    if (!!data) {
-                        var available = maxPlayers - data.length;
-                        console.log('Available spots: ' + available);
+                if (!!data) {
+                    if (data.length >= 0) {
+                        //Show players
+                        self.showIncomingPlayers(data, maxPlayers);
+                    } else if (data.length === maxPlayers) {
+                        //Remove interval and show button to start to play
+                        PrototypePacman.config.socket.multiplayerData = {
+                            playersCount: maxPlayers
+                        };
+                        clearInterval(self.pollingPlayers);
+                        Utils.removeClass(document.getElementById('button-ready-multiplayer'), 'hide');
                     }
                 }
 
                 self.socket.send(action, 'json');
-            }, 200);
+            }, 300);
+        },
+        /**
+         * Move forward after the player have been selected
+         * @method PrototypePacman.Game#update
+         */
+        playersReady: function(canvasId) {
+            Utils.changeHashTag('',false);
+            this.initGame(this.canvasId);
+        },
+        /**
+         * Show ready players in the menu
+         * @method PrototypePacman.Game#update
+         */
+        showIncomingPlayers: function(playersData, maxPlayers) {
+            var ul = document.getElementById('ul-waiting-players'),
+                ulBoard = document.getElementById('ul-players'),
+                availableSpots = maxPlayers - playersData.length,
+                spotsBlock = document.getElementById('spots-available');
+
+            spotsBlock.innerHTML = availableSpots + ' available spots'
+
+            ul.innerHTML = '';
+            ulBoard.innerHTML = '';
+            playersData.forEach(function(item) {
+               var li = document.createElement('li'),
+                   liBoard = document.createElement('li'),
+                   name = document.createElement('span'),
+                   nameBoard = document.createElement('span'),
+                   role = document.createElement('span');
+                   roleBoard = document.createElement('span');
+
+                li.style.backgroundColor = item.color;
+                liBoard.style.backgroundColor = item.color;
+
+                name.innerHTML = item.name;
+                role.innerHTML = (item.role).toUpperCase();
+                role.style.float = 'right';
+
+                nameBoard.innerHTML = item.name;
+                roleBoard.innerHTML = (item.role).toUpperCase();
+                roleBoard.style.float = 'right';
+
+                li.appendChild(name);
+                li.appendChild(role);
+
+                liBoard.appendChild(nameBoard);
+                liBoard.appendChild(roleBoard);
+
+                ul.appendChild(li);
+                ulBoard.appendChild(liBoard);
+            });
+        },
+
+        /**
+         * Update game logic
+         * @method PrototypePacman.Game#update
+         */
+        hideMenu: function(menuName){
+            Utils.addClass(document.getElementById(menuName), 'hide');
         },
         /**
          * Update game logic
