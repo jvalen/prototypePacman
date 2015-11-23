@@ -12,6 +12,31 @@
 ;(function() {
     var Utils = {
         /**
+         * Add class name to a given DOM element
+         * @param {object} DOM element
+         * @param {string} class name
+         */
+        addClass: function(target, className) {
+            if (typeof className === 'string') {
+                target.className += className;
+            }
+        },
+        /**
+         * Remove class name of a given DOM element
+         * @param {object} DOM element
+         * @param {string} class name
+         */
+        removeClass: function(target, className) {
+            if (typeof className === 'string') {
+                var classes = target.className.split(' '),
+                    position = classes.indexOf(className);
+                if (position > -1) {
+                    classes.splice(position);
+                    target.className = classes.join(' ');
+                }
+            }
+        },
+        /**
          * Get a random number within a range
          * @param {number} min
          * @param {number} max

@@ -25,8 +25,8 @@ Network.Socket = function(address) {
 
     this.socket.onmessage = function(e) {
         if (typeof e.data == "string") {
-            self.dataReceived = e.data;
-            //console.log("String message received: " + e.data);
+            self.dataReceived = JSON.parse(e.data);
+            //console.log(e.data);
         }
     }
 

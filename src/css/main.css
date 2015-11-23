@@ -27,7 +27,7 @@ canvas {
     pointer-events: none;
 }
 
-.main-menu {
+.main-menu , .waiting-players{
     position: fixed;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 3em;
@@ -43,7 +43,7 @@ canvas {
     transition: opacity 400ms ease-in;
 }
 
-.main-menu:target {
+.main-menu:target, .waiting-players:target {
     opacity:1;
     pointer-events: auto;
 }
@@ -65,7 +65,7 @@ canvas {
     background: -o-linear-gradient(#fff, #999);
 }
 
-.main-menu > div {
+.main-menu > div , .waiting-players > div {
     width: 50%;
     position: relative;
     margin: 5% auto;
@@ -103,3 +103,7 @@ canvas {
 }
 
 .close:hover, .menu-option:hover { background: #00d9ff; }
+
+.hide {
+    display: none !important;
+}

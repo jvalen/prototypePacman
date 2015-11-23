@@ -32,7 +32,21 @@ PrototypePacman.Ghost.prototype = {
      * @method PrototypePacman.Ghost#update
      */
     update: function() {
-        this.moveGhost(this, this.moveDirection.current, false);
+        if (this.game.returnGameMode() === 'multiplayer') {
+            //Update waiting ghost direction on multiplayer
+            var self = this,
+                currentGhostData = !!this.game.socket ?
+                    this.game.socket.dataReceived.filter(
+                        function(item){
+                            return ('color' in item && (item.color === self.color))
+                        }
+                    ) : [];
+            this.moveDirection.waiting = currentGhostData[0].direction;
+            this.moveGhost(this, this.moveDirection.waiting, true);
+        } else {
+            //Move ghost on single or machine learning mode
+            this.moveGhost(this, this.moveDirection.current, false);
+        }
     },
     /**
      * Draw the ghost
@@ -96,8 +110,6 @@ PrototypePacman.Ghost.prototype = {
      * @param {boolean} isWaiting
      */
     moveGhost: function(ghost, direction, isWaiting) {
-        var directionOptions = ['left','right','up','down'];
-        var randomDirection = directionOptions[Utils.getRandomInt(0, directionOptions.length - 1)];
         var currentTileGhost = ghost.game.getTileReference(
                 this.center.x - (this.size.width / 2),
                 this.center.y - (this.size.height / 2)
@@ -108,7 +120,7 @@ PrototypePacman.Ghost.prototype = {
             ),
             currentPath = [];
 
-        var currentMoveCoords = this.stepCoords(this.moveDirection.current, this.speed),
+        var currentMoveCoords = this.stepCoords(direction, this.speed),
             walkableConditionFunction = function(data) {
               if (!!data.color) {
                   return (
@@ -123,74 +135,111 @@ PrototypePacman.Ghost.prototype = {
         switch (direction) {
             case 'left':
             case 'right':
-                if (isWaiting) {
-                    ghost.center.x += currentMoveCoords.x;
-                } else {
-                    //Check if the next position is valid (no collision) and
-                    //cannot change direction (get intersection)
-                    if (
-                        (ghost.game.isValidLocation(ghost, currentMoveCoords.x, currentMoveCoords.y)) &&
-                        (!(
-                            (ghost.game.isValidLocation(ghost, 0, -1 * this.speed)) ||
-                            (ghost.game.isValidLocation(ghost, 0, 1 * this.speed))
-                        ))
-                    ) {
-                        //Continue the current path
+                if (this.game.returnGameMode() === 'multiplayer') {
+                    //Multiplayer mode
+                    if (ghost.game.isValidLocation(
+                            ghost,
+                            currentMoveCoords.x,
+                            currentMoveCoords.y
+                        )
+                    )
+                    {
+                        //Check if the next position is valid (no collision)
                         ghost.center.x += currentMoveCoords.x;
                         ghost.moveDirection.current = direction;
+
+                    } else if (isWaiting) {
+                        this.moveGhost(ghost, ghost.moveDirection.current, false);
+                    }
+                } else {
+                    //Single or machine learning mode
+                    if (isWaiting) {
+                        ghost.center.x += currentMoveCoords.x;
                     } else {
-                        //Needs to calculate new path
-                        currentPath = Utils.findPath(
-                            ghost.game.getMazeArray(),
-                            [currentTileGhost.x, currentTileGhost.y],
-                            [currentTilePlayer.x, currentTilePlayer.y],
-                            walkableConditionFunction
-                        );
+                        if (
+                            (ghost.game.isValidLocation(ghost, currentMoveCoords.x, currentMoveCoords.y)) &&
+                            (!(
+                                (ghost.game.isValidLocation(ghost, 0, -1 * this.speed)) ||
+                                (ghost.game.isValidLocation(ghost, 0, 1 * this.speed))
+                            ))
+                        )
+                        {
+                            //Check if the next position is valid (no collision) and
+                            //cannot change direction (get intersection)
+                            ghost.center.x += currentMoveCoords.x;
+                            ghost.moveDirection.current = direction;
 
-                        var nextDirection = randomDirection;
-                        if (currentPath.length > 1) {
-                            var nextDirection = ghost.nextDirection(currentPath[1], currentTileGhost);
+                        } else {
+                            //Needs to calculate new path
+                            currentPath = Utils.findPath(
+                                ghost.game.getMazeArray(),
+                                [currentTileGhost.x, currentTileGhost.y],
+                                [currentTilePlayer.x, currentTilePlayer.y],
+                                walkableConditionFunction
+                            );
+
+                            if (currentPath.length > 1) {
+                                var nextDirection = ghost.nextDirection(currentPath[1], currentTileGhost);
+                            }
+                            ghost.moveDirection.current = nextDirection;
+
+                            //Force to move to the first tile on the path to the player
+                            this.moveGhost(ghost, nextDirection, true);
                         }
-                        ghost.moveDirection.current = nextDirection;
-
-                        //Force to move to the first tile on the path to the player
-                        this.moveGhost(ghost, nextDirection, true);
                     }
                 }
                 break;
             case 'up':
             case 'down':
-                if (isWaiting) {
-                    ghost.center.y += currentMoveCoords.y;
-                } else {
-                    //Check if the next position is valid (no collision) and
-                    //cannot change direction (get intersection)
-                    if (
-                        (ghost.game.isValidLocation(ghost, currentMoveCoords.x, currentMoveCoords.y)) &&
-                        (!(
-                            (ghost.game.isValidLocation(ghost, -1 * this.speed, 0)) ||
-                            (ghost.game.isValidLocation(ghost, 1 * this.speed, 0))
-                        ))
-                    ) {
-                        //Continue the current path
+                if (this.game.returnGameMode() === 'multiplayer') {
+                    if (ghost.game.isValidLocation(
+                            ghost,
+                            currentMoveCoords.x,
+                            currentMoveCoords.y
+                        )
+                    )
+                    {
+                        //Check if the next position is valid (no collision)
                         ghost.center.y += currentMoveCoords.y;
                         ghost.moveDirection.current = direction;
+
+                    } else if (isWaiting) {
+                        this.moveGhost(ghost, ghost.moveDirection.current, false);
+                    }
+                } else {
+                    if (isWaiting) {
+                        ghost.center.y += currentMoveCoords.y;
                     } else {
-                        //Needs to calculate new path
-                        currentPath = Utils.findPath(
-                            ghost.game.getMazeArray(),
-                            [currentTileGhost.x, currentTileGhost.y],
-                            [currentTilePlayer.x, currentTilePlayer.y],
-                            walkableConditionFunction
-                        );
+                        if (
+                            (ghost.game.isValidLocation(ghost, currentMoveCoords.x, currentMoveCoords.y)) &&
+                            (!(
+                                (ghost.game.isValidLocation(ghost, -1 * this.speed, 0)) ||
+                                (ghost.game.isValidLocation(ghost, 1 * this.speed, 0))
+                            ))
+                        )
+                        {
+                            //Check if the next position is valid (no collision) and
+                            //cannot change direction (get intersection)
+                            ghost.center.y += currentMoveCoords.y;
+                            ghost.moveDirection.current = direction;
 
-                        var nextDirection = randomDirection;
-                        if (currentPath.length > 1) {
-                            var nextDirection = ghost.nextDirection(currentPath[1], currentTileGhost);
+                        } else {
+                            //Needs to calculate new path
+                            currentPath = Utils.findPath(
+                                ghost.game.getMazeArray(),
+                                [currentTileGhost.x, currentTileGhost.y],
+                                [currentTilePlayer.x, currentTilePlayer.y],
+                                walkableConditionFunction
+                            );
+
+                            if (currentPath.length > 1) {
+                                var nextDirection = ghost.nextDirection(currentPath[1], currentTileGhost);
+                            }
+                            ghost.moveDirection.current = nextDirection;
+
+                            //Force to move to the first tile on the path to the player
+                            this.moveGhost(ghost, nextDirection, true);
                         }
-                        ghost.moveDirection.current = nextDirection;
-
-                        this.moveGhost(ghost, nextDirection, true);
                     }
                 }
                 break;

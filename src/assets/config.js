@@ -49,26 +49,26 @@ PrototypePacman.config = {
             size: { width: 30, height: 30 },
             center: { x: 2 * 30, y: 2 * 30},
             color: 'pink',
-            speed: 2
-        },
+            speed: 1
+        }/*,
         {
             size: { width: 30, height: 30 },
             center: { x: 24 * 30, y: 2 * 30},
             color: 'cyan',
-            speed: 3
+            speed: 1
         },
         {
             size: { width: 30, height: 30 },
             center: { x: 2 * 30, y: 12 * 30},
-            color: 'darksalmon ',
+            color: 'darksalmon',
             speed: 1
         },
         {
             size: { width: 30, height: 30 },
             center: { x: 24 * 30, y: 12 * 30},
             color: 'lawngreen',
-            speed: 2
-        }
+            speed: 1
+        }*/
     ],
     text: {
         en: {
@@ -85,6 +85,9 @@ PrototypePacman.config = {
     socket: {
         active: false,
         playerMovesFromServer: false,
+        multiplayer: false,
+        multiplayerData: {},
+        //address: 'ws://192.168.1.222:9000'
         address: 'ws://127.0.0.1:9000'
     }
 };

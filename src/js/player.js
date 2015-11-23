@@ -35,15 +35,19 @@ PrototypePacman.Player.prototype = {
      */
     update: function() {
         //Move player
+        var mode = this.game.returnGameMode();
         this.movePlayer(this, this.moveDirection.waiting, true);
 
         if (
-            PrototypePacman.config.socket.active &&
-            PrototypePacman.config.socket.playerMovesFromServer &&
+            mode === 'machine-learning' &&
             this.isValidAction(this.game.socket.dataReceived)
         ) {
             //Player direction is given by the socket connection
             this.moveDirection.waiting = this.game.socket.dataReceived;
+        } else if(mode === 'multiplayer') {
+            //Multiplayer mode
+            var multiplayerData = this.game.socket.dataReceived;
+            this.moveDirection.waiting = multiplayerData[0].direction;
         } else {
             //Change direction (keyboard)
             if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {

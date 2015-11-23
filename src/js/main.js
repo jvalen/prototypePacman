@@ -18,7 +18,7 @@
     };
     Game.prototype = {
         /**
-         * Start the game
+         * start the app
          * @method PrototypePacman.Game#start
          */
         start: function(canvasId, type) {
@@ -26,17 +26,29 @@
             //Options
             switch(type) {
                 case 'single':
+                    this.initGame(canvasId);
                     break;
                 case 'lan':
                     PrototypePacman.config.socket.active = true;
-                    PrototypePacman.config.socket.playerMovesFromServer = true;
+                    PrototypePacman.config.socket.playerMovesFromServer = false;
+                    PrototypePacman.config.socket.multiplayer = true;
+                    this.socket = new Network.Socket(PrototypePacman.config.socket.address);
+                    this.waitingForPlayers(canvasId);
                     break;
                 case 'learning':
                     PrototypePacman.config.socket.active = true;
                     PrototypePacman.config.socket.playerMovesFromServer = true;
+                    this.socket = new Network.Socket(PrototypePacman.config.socket.address);
+                    this.initGame(canvasId);
                     break;
             }
-
+        },
+        /**
+         * Init the game
+         * @method PrototypePacman.Game#initGame
+         * @param {string} canvasId
+         */
+        initGame: function(canvasId) {
             var canvas = document.getElementById(canvasId),
                 screen = canvas.getContext('2d'),
                 gameSize = { width: canvas.width, height: canvas.height },
@@ -58,10 +70,6 @@
             var ghostOptions = PrototypePacman.config.ghostOptions;
             this.ghosts = this.createGhosts(this, ghostOptions);
 
-            if (PrototypePacman.config.socket.active) {
-                this.socket = new Network.Socket(PrototypePacman.config.socket.address);
-            }
-
             //Game state
             this.gameScreenshot = this.getGameScreenshot();
             this.gameState = 'playing';
@@ -75,6 +83,47 @@
             };
 
             tick();
+        },
+        /**
+         * Wait for players in multiplayer mode
+         * @method PrototypePacman.Game#waitingForPlayers
+         */
+        waitingForPlayers: function(canvasId) {
+            var self = this;
+
+            Utils.changeHashTag('waiting-players', false);
+
+            this.pollingPlayers = setInterval(function() {
+                var data = self.socket.dataReceived,
+                    action = {
+                        action: 'waiting',
+                        playersSetup: [
+                            {color: '#B3B3B3', role: 'player'},
+                            {color: 'pink', role: 'ghost'},
+                            {color: 'cyan', role: 'ghost'},
+                            {color: 'darksalmon', role: 'ghost'},
+                            {color: 'lawngreen', role: 'ghost'}
+                        ]
+                    },
+                    maxPlayers = 2;
+
+                if (!!data && data.length === maxPlayers) {
+                    PrototypePacman.config.socket.multiplayerData = {
+                        playersCount: maxPlayers
+                    };
+                    clearInterval(self.pollingPlayers);
+                    Utils.changeHashTag('#',false);
+                    self.initGame(canvasId);
+                    console.log('clear interval');
+                } else {
+                    if (!!data) {
+                        var available = maxPlayers - data.length;
+                        console.log('Available spots: ' + available);
+                    }
+                }
+
+                self.socket.send(action, 'json');
+            }, 200);
         },
         /**
          * Update game logic
@@ -106,7 +155,13 @@
             }
 
             if (PrototypePacman.config.socket.active) {
-                this.sendGameState();
+                if (!!PrototypePacman.config.socket.multiplayerData) {
+                    this.socket.send({
+                        action: 'waiting'
+                    }, 'json');
+                } else {
+                    this.sendGameState();
+                }
             }
         },
         /**
@@ -256,6 +311,27 @@
                 }),
                 state: this.gameState //win, lose, playing
             }
+        },
+        /**
+         * Return game mode
+         *
+         * @method PrototypePacman.Game#returnGameMode
+         */
+        returnGameMode: function() {
+            if (
+                PrototypePacman.config.socket.active &&
+                PrototypePacman.config.socket.playerMovesFromServer
+            ) {
+                return 'machine-learning'
+            } else if (
+                PrototypePacman.config.socket.active &&
+                !!PrototypePacman.config.socket.multiplayerData
+            ) {
+                return 'multiplayer'
+            } else {
+                return 'single'
+            }
+
         }
     };
 
