@@ -19,11 +19,18 @@ ul li {
 }
 
 #ul-players {
-    position: absolute;
-    left: 1000px;
     font-size: 1.2em;
-    top: 550px;
+    top: -390px;
+    width: 1000px;
+    margin: 0 auto;
+    display: table;
+    position: relative;
+}
+
+#ul-players li {
     width: 300px;
+    position: relative;
+    left: 794px;
 }
 
 canvas {

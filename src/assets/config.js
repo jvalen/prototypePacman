@@ -95,7 +95,6 @@ PrototypePacman.config = {
             {color: 'lawngreen', role: 'ghost'}
         ],
         multiplayerData: {},
-        //address: 'ws://192.168.1.222:9000'
         address: 'ws://127.0.0.1:9000'
     }
 };

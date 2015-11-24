@@ -41,8 +41,11 @@ PrototypePacman.Ghost.prototype = {
                             return ('color' in item && (item.color === self.color))
                         }
                     ) : [];
-            this.moveDirection.waiting = currentGhostData[0].direction;
-            this.moveGhost(this, this.moveDirection.waiting, true);
+
+            if (currentGhostData.length > 0) {
+                this.moveDirection.waiting = currentGhostData[0].direction;
+                this.moveGhost(this, this.moveDirection.waiting, true);
+            }
         } else {
             //Move ghost on single or machine learning mode
             this.moveGhost(this, this.moveDirection.current, false);

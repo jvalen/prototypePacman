@@ -100,7 +100,11 @@
                 var data = self.socket.dataReceived,
                     action = {
                         action: 'waiting',
-                        playersSetup: PrototypePacman.config.socket.playersData
+                        playersSetup: {
+                            'attributes': PrototypePacman.config.socket.playersData,
+                            'maxPlayers': PrototypePacman.config.socket.maxPlayers
+                        }
+
                     },
                     maxPlayers = PrototypePacman.config.socket.maxPlayers;
 
@@ -108,13 +112,15 @@
                     if (data.length >= 0) {
                         //Show players
                         self.showIncomingPlayers(data, maxPlayers);
-                    } else if (data.length === maxPlayers) {
+                    }
+                    if (data.length == maxPlayers) {
                         //Remove interval and show button to start to play
                         PrototypePacman.config.socket.multiplayerData = {
                             playersCount: maxPlayers
                         };
-                        clearInterval(self.pollingPlayers);
                         Utils.removeClass(document.getElementById('button-ready-multiplayer'), 'hide');
+                    } else {
+                        Utils.addClass(document.getElementById('button-ready-multiplayer'), 'hide');
                     }
                 }
 
@@ -126,6 +132,7 @@
          * @method PrototypePacman.Game#update
          */
         playersReady: function(canvasId) {
+            clearInterval(this.pollingPlayers);
             Utils.changeHashTag('',false);
             this.initGame(this.canvasId);
         },
@@ -146,9 +153,9 @@
             playersData.forEach(function(item) {
                var li = document.createElement('li'),
                    liBoard = document.createElement('li'),
-                   name = document.createElement('span'),
-                   nameBoard = document.createElement('span'),
-                   role = document.createElement('span');
+                   name = document.createElement('b'),
+                   nameBoard = document.createElement('b'),
+                   role = document.createElement('span'),
                    roleBoard = document.createElement('span');
 
                 li.style.backgroundColor = item.color;
@@ -249,8 +256,17 @@
          * @param {object} options
          */
         createGhosts: function(game, options) {
-            var ghosts = [];
-            for (var i = 0; i < options.length; i++) {
+            var ghosts = [],
+                ghostsAmount;
+
+            //Set the number of ghosts allowed
+            if (PrototypePacman.config.socket.multiplayer === true) {
+                ghostsAmount = PrototypePacman.config.socket.maxPlayers - 1;
+            } else {
+                ghostsAmount = options.length;
+            }
+
+            for (var i = 0; i < ghostsAmount; i++) {
                 ghosts.push(new PrototypePacman.Ghost(game, options[i]));
             }
             return ghosts;
