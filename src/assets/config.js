@@ -84,7 +84,7 @@ PrototypePacman.config = {
     },
     socket: {
         active: false,
-        playerMovesFromServer: false,
+        machineLearning: false,
         multiplayer: false,
         maxPlayers: 2,
         playersData: [

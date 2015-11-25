@@ -33,14 +33,14 @@
                     break;
                 case 'lan':
                     PrototypePacman.config.socket.active = true;
-                    PrototypePacman.config.socket.playerMovesFromServer = false;
+                    PrototypePacman.config.socket.machineLearning = false;
                     PrototypePacman.config.socket.multiplayer = true;
                     this.socket = new Network.Socket(PrototypePacman.config.socket.address);
                     this.waitingForPlayers();
                     break;
                 case 'learning':
                     PrototypePacman.config.socket.active = true;
-                    PrototypePacman.config.socket.playerMovesFromServer = true;
+                    PrototypePacman.config.socket.machineLearning = true;
                     this.socket = new Network.Socket(PrototypePacman.config.socket.address);
                     this.initGame(canvasId);
                     break;
@@ -192,6 +192,47 @@
          * @method PrototypePacman.Game#update
          */
         update: function(){
+            if (PrototypePacman.config.socket.machineLearning) {
+                //Machine learning
+                if (!!this.socket.dataReceived) {
+                    this.updateWorld(); //Update world
+                    this.socket.dataReceived = null; //Remove data
+                    this.sendGameState(); //Send the current game state
+                }
+            } else {
+                //Single or multiplayer
+                this.updateWorld();
+
+                if (PrototypePacman.config.socket.active &&
+                    !!PrototypePacman.config.socket.multiplayerData) {
+                    this.socket.send({
+                        action: 'waiting'
+                    }, 'json');
+                }
+            }
+
+        },
+        /**
+         * Draw game bodies
+         * @method PrototypePacman.Game#draw
+         * @param {object} screen Canvas ctx
+         * @param {object} gameSize
+         */
+        draw: function(screen, gameSize){
+            screen.clearRect(0, 0, gameSize.width, gameSize.height);
+
+            this.board.draw(screen);
+            this.player.draw(screen);
+
+            for (var i= 0; i < this.ghosts.length; i++) {
+                this.ghosts[i].draw(screen);
+            }
+        },
+        /**
+         * Update world bodies
+         * @method PrototypePacman.Game#updateWorld
+         */
+        updateWorld: function(){
             this.player.update();
 
             for (var i= 0; i < this.ghosts.length; i++) {
@@ -214,32 +255,6 @@
                     title: PrototypePacman.config.text[this.lang].win.title,
                     description: PrototypePacman.config.text[this.lang].win.description
                 });
-            }
-
-            if (PrototypePacman.config.socket.active) {
-                if (!!PrototypePacman.config.socket.multiplayerData) {
-                    this.socket.send({
-                        action: 'waiting'
-                    }, 'json');
-                } else {
-                    this.sendGameState();
-                }
-            }
-        },
-        /**
-         * Draw game bodies
-         * @method PrototypePacman.Game#draw
-         * @param {object} screen Canvas ctx
-         * @param {object} gameSize
-         */
-        draw: function(screen, gameSize){
-            screen.clearRect(0, 0, gameSize.width, gameSize.height);
-
-            this.board.draw(screen);
-            this.player.draw(screen);
-
-            for (var i= 0; i < this.ghosts.length; i++) {
-                this.ghosts[i].draw(screen);
             }
         },
         /**
@@ -392,7 +407,7 @@
         returnGameMode: function() {
             if (
                 PrototypePacman.config.socket.active &&
-                PrototypePacman.config.socket.playerMovesFromServer
+                PrototypePacman.config.socket.machineLearning
             ) {
                 return 'machine-learning'
             } else if (
