@@ -368,6 +368,7 @@
                 self = this;
 
             return {
+                action: 'game-state',
                 board: this.board.getReference(),
                 player: {
                     x: playerPos.x,
