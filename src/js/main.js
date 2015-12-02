@@ -47,6 +47,20 @@
             }
         },
         /**
+         * restart the app
+         * @method PrototypePacman.Game#restart
+         */
+        restart: function () {
+            if (this.returnGameMode() === 'multiplayer') {
+                var action = {
+                    action: 'restart'
+                };
+                this.socket.send(action, 'json');
+                this.socket.close();
+            }
+            Utils.removeHashTag(true);
+        },
+        /**
          * Init the game
          * @method PrototypePacman.Game#initGame
          * @param {string} canvasId

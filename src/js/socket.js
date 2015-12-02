@@ -51,6 +51,9 @@ Network.Socket.prototype = {
         } else {
             console.log("Connection not opened.")
         }
+    },
+    close: function() {
+        this.socket.close(1000); // 1000: Normal way to close
     }
 };
 
