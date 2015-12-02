@@ -86,7 +86,7 @@ PrototypePacman.config = {
         active: false,
         machineLearning: false,
         multiplayer: false,
-        maxPlayers: 2,
+        maxPlayers: 5,
         playersData: [
             {color: '#B3B3B3', role: 'player'},
             {color: 'pink', role: 'ghost'},
